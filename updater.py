@@ -1,29 +1,28 @@
 import requests
 import re
 
-# جميع المصادر والمواقع التي أرسلتها مدمجة هنا بالكامل
+# التركيز الكامل على باقات الرياضة وسيرفرات البث المباشر للمباريات
 SOURCES = {
-    "Yallo_TV_Serv1": {
+    "beIN_Sports_HD1": {
         "page_url": "https://new.marocan.xyz/albaplayer/yallo1/?serv=1",
         "referer": "https://new.marocan.xyz/",
-        "display_name": "Yallo TV - سيرفر 1"
+        "display_name": "beIN Sports - سيرفر المباريات 1"
     },
-    "Fastly_Live_Serv2": {
+    "beIN_Sports_HD2": {
         "page_url": "https://new.marocan.xyz/albaplayer/yallo1/?serv=2",
         "referer": "",
-        "display_name": "Fastly Live - سيرفر 2"
+        "display_name": "beIN Sports - سيرفر المباريات 2"
     },
-    "Pscp_Direct_Stream": {
+    "Live_Match_Stream": {
         "page_url": "https://prod-fastly-eu-central-1.video.pscp.tv/Transcoding/v1/hls/0ujF4lpQzwXiGWBQGV81drLdPzCR_3JKg6eF7WvWQkSLwymVJQqCNAQ0dy1_qQ5pK0zEyd2Glb5ir7uINL7UYA/transcode/eu-central-1/periscope-replay-direct-prod-eu-central-1-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ18xMDgwcDYwXzEwIiwiSGVpZ2h0IjoxMDgwLCJIaWdoRnJhbWVSYXRlIjp0cnVlLCJLYnBzIjo4MDAwLCJXaWR0aCI6MTkyMH0.OBq8EsoF4c8ydlmfZFxJzACPHYFjmjUaSER2wvsfHso/dynamic_delta.m3u8?type=live",
         "referer": "",
-        "display_name": "Pscp Direct Stream - البث المباشر"
+        "display_name": "beIN Sports Max - البث المباشر الفائق"
     }
 }
 
-USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1"
+USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
 
 def fetch_live_link(source_key, info):
-    # إذا كان الرابط مباشراً وجاهزاً ومكملاً مثل رابط pscp الطويل، يعود به مباشرة
     if "dynamic_delta.m3u8" in info["page_url"]:
         return info["page_url"]
         
@@ -34,13 +33,12 @@ def fetch_live_link(source_key, info):
         response = requests.get(info["page_url"], headers=headers, timeout=15)
         if response.status_code == 200:
             html = response.text
-            # قشط وبحث عن روابط m3u8
             links = re.findall(r'(https?://[^\s"\']+\.m3u8[^\s"\']*)', html)
             if links:
                 for link in links:
-                    if source_key == "Yallo_TV_Serv1" and ("kooran" in link or "tist2" in link or "live" in link):
+                    if source_key == "beIN_Sports_HD1" and ("kooran" in link or "tist2" in link or "live" in link):
                         return link
-                    if source_key == "Fastly_Live_Serv2" and ("pscp.tv" in link or "video" in link or "fastly" in link):
+                    if source_key == "beIN_Sports_HD2" and ("pscp.tv" in link or "video" in link or "fastly" in link):
                         return link
                 return links[0]
         return None
@@ -52,14 +50,13 @@ def generate_iptv_playlist():
     for key, info in SOURCES.items():
         live_url = fetch_live_link(key, info)
         
-        # روابط احتياطية ذكية وثابتة لضمان عمل السيرفرات في حال توقف القشط المؤقت
         if not live_url:
-            if key == "Yallo_TV_Serv1":
+            if "HD1" in key:
                 live_url = "https://live.kooran13.cfd/tist2/index.m3u8"
-            elif key == "Fastly_Live_Serv2" or key == "Pscp_Direct_Stream":
-                live_url = "https://prod-fastly-eu-central-1.video.pscp.tv/Transcoding/v1/hls/0ujF4lpQzwXiGWBQGV81drLdPzCR_3JKg6eF7WvWQkSLwymVJQqCNAQ0dy1_qQ5pK0zEyd2Glb5ir7uINL7UYA/transcode/eu-central-1/periscope-replay-direct-prod-eu-central-1-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ18xMDgwcDYwXzEwIiwiSGVpZ2h0IjoxMDgwLCJIaWdoRnJhbWVSYXRlIjp0cnVlLCJLYnBzIjo4MDAwLCJXaWR0aCI6MTkyMH0.OBq8EsoF4c8ydlmfZFxJzACPHYFjmjUaSER2wvsfHso/dynamic_delta.m3u8?type=live"
+            else:
+                live_url = "https://prod-fastly-eu-central-1.video.pscp.tv/Transcoding/v1/hls/0ujF4lpQzwXiGWBQGV81drLdPzCR_3JKg6eF7WvWQkSLwymVJQqCNAQ0dy1_qQ5insky0zEyd2Glb5ir7uINL7UYA/transcode/eu-central-1/periscope-replay-direct-prod-eu-central-1-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ18xMDgwcDYwXzEwIiwiSGVpZ2h0IjoxMDgwLCJIaWdoRnJhbWVSYXRlIjp0cnVlLCJLYnBzIjo4MDAwLCJXaWR0aCI6MTkyMH0.OBq8EsoF4c8ydlmfZFxJzACPHYFjmjUaSER2wvsfHso/dynamic_delta.m3u8?type=live"
 
-        m3u_output += f'#EXTINF:-1 tvg-id="{key}" tvg-name="{info["display_name"]}" group-title="Sports", {info["display_name"]}\n'
+        m3u_output += f'#EXTINF:-1 tvg-id="{key}" tvg-name="{info["display_name"]}" group-title="🔥 LIVE SPORTS", {info["display_name"]}\n'
         m3u_output += f'#EXTVLCOPT:http-user-agent={USER_AGENT}\n'
         if info["referer"]:
             m3u_output += f'#EXTVLCOPT:http-referrer={info["referer"]}\n'
