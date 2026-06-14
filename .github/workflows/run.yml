@@ -1,0 +1,32 @@
+name: Update IPTV Playlist
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update_list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Requests Library
+        run: pip install requests
+
+      - name: Run Script to Fetch Links
+        run: python updater.py
+
+      - name: Save and Commit Changes
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add live_sports.m3u
+          git commit -m "🔄 تحديث تلقائي لروابط البث" || exit 0
+          git push
