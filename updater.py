@@ -1,7 +1,7 @@
 import requests
 import re
 
-# التركيز الكامل على باقات الرياضة وسيرفرات البث المباشر للمباريات
+# المصادر الرياضية المحددة والمضمونة
 SOURCES = {
     "beIN_Sports_HD1": {
         "page_url": "https://new.marocan.xyz/albaplayer/yallo1/?serv=1",
@@ -54,7 +54,7 @@ def generate_iptv_playlist():
             if "HD1" in key:
                 live_url = "https://live.kooran13.cfd/tist2/index.m3u8"
             else:
-                live_url = "https://prod-fastly-eu-central-1.video.pscp.tv/Transcoding/v1/hls/0ujF4lpQzwXiGWBQGV81drLdPzCR_3JKg6eF7WvWQkSLwymVJQqCNAQ0dy1_qQ5insky0zEyd2Glb5ir7uINL7UYA/transcode/eu-central-1/periscope-replay-direct-prod-eu-central-1-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ18xMDgwcDYwXzEwIiwiSGVpZ2h0IjoxMDgwLCJIaWdoRnJhbWVSYXRlIjp0cnVlLCJLYnBzIjo4MDAwLCJXaWR0aCI6MTkyMH0.OBq8EsoF4c8ydlmfZFxJzACPHYFjmjUaSER2wvsfHso/dynamic_delta.m3u8?type=live"
+                live_url = "https://prod-fastly-eu-central-1.video.pscp.tv/Transcoding/v1/hls/0ujF4lpQzwXiGWBQGV81drLdPzCR_3JKg6eF7WvWQkSLwymVJQqCNAQ0dy1_qQ5pK0zEyd2Glb5ir7uINL7UYA/transcode/eu-central-1/periscope-replay-direct-prod-eu-central-1-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ18xMDgwcDYwXzEwIiwiSGVpZ2h0IjoxMDgwLCJIaWdoRnJhbWVSYXRlIjp0cnVlLCJLYnBzIjo4MDAwLCJXaWR0aCI6MTkyMH0.OBq8EsoF4c8ydlmfZFxJzACPHYFjmjUaSER2wvsfHso/dynamic_delta.m3u8?type=live"
 
         m3u_output += f'#EXTINF:-1 tvg-id="{key}" tvg-name="{info["display_name"]}" group-title="🔥 LIVE SPORTS", {info["display_name"]}\n'
         m3u_output += f'#EXTVLCOPT:http-user-agent={USER_AGENT}\n'
