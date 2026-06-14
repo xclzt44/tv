@@ -1,5 +1,5 @@
 import requests
-import re
+import re 
 
 # المصادر الرياضية المحددة والمضمونة
 SOURCES = {
